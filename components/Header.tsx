@@ -57,10 +57,10 @@ export default function Header({ children, className }: HeaderProps) {
         </div>
         <div className="flex md:hidden gap-x-2 items-center">
           <button className="rounded-full p-2 bg-black flex items-center justify-center hover:opacity-75 transition">
-            <HiHome size={20} className="text-white/90" />
+            <HiHome href="/" size={20} className="text-white/90" />
           </button>
           <button className="rounded-full p-2 bg-black flex items-center justify-center hover:opacity-75 transition">
-            <BiSearch size={20} className="text-white/90" />
+            <BiSearch href="/search" size={20} className="text-white/90" />
           </button>
         </div>
         <div className="flex justify-between items-center gap-x-4">
