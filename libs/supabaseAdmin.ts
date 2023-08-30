@@ -12,7 +12,7 @@ export const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 );
 
-export const upsertProductRecord = async (product: Stripe.Product) => {
+const upsertProductRecord = async (product: Stripe.Product) => {
   const productData: Product = {
     id: product.id,
     active: product.active,
@@ -27,7 +27,7 @@ export const upsertProductRecord = async (product: Stripe.Product) => {
   console.log(`Product inserted/updated: ${product.id}`);
 };
 
-export const upsertPriceRecord = async (price: Stripe.Price) => {
+const upsertPriceRecord = async (price: Stripe.Price) => {
   const priceData: Price = {
     id: price.id,
     product_id: typeof price.product === "string" ? price.product : "",
@@ -47,7 +47,7 @@ export const upsertPriceRecord = async (price: Stripe.Price) => {
   console.log(`Price inserted/updated: ${price.id}`);
 };
 
-export const createOrRetrieveCustomer = async ({
+const createOrRetrieveCustomer = async ({
   email,
   uuid,
 }: {
@@ -59,7 +59,6 @@ export const createOrRetrieveCustomer = async ({
     .select("stripe_customer_id")
     .eq("id", uuid)
     .single();
-
   if (error || !data?.stripe_customer_id) {
     const customerData: { metadata: { supabaseUUID: string }; email?: string } =
       {
@@ -67,9 +66,7 @@ export const createOrRetrieveCustomer = async ({
           supabaseUUID: uuid,
         },
       };
-
     if (email) customerData.email = email;
-
     const customer = await stripe.customers.create(customerData);
     const { error: supabaseError } = await supabaseAdmin
       .from("customers")
@@ -81,10 +78,11 @@ export const createOrRetrieveCustomer = async ({
   return data.stripe_customer_id;
 };
 
-export const copyBillingDetailsToCustomer = async (
+const copyBillingDetailsToCustomer = async (
   uuid: string,
   payment_method: Stripe.PaymentMethod
 ) => {
+  //Todo: check this assertion
   const customer = payment_method.customer as string;
   const { name, phone, address } = payment_method.billing_details;
   if (!name || !phone || !address) return;
@@ -100,7 +98,7 @@ export const copyBillingDetailsToCustomer = async (
   if (error) throw error;
 };
 
-export const manageSubscriptionStatusChange = async (
+const manageSubscriptionStatusChange = async (
   subscriptionId: string,
   customerId: string,
   createAction = false
@@ -171,4 +169,11 @@ export const manageSubscriptionStatusChange = async (
       uuid,
       subscription.default_payment_method as Stripe.PaymentMethod
     );
+};
+
+export {
+  upsertProductRecord,
+  upsertPriceRecord,
+  createOrRetrieveCustomer,
+  manageSubscriptionStatusChange,
 };

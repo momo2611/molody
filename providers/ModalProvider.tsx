@@ -21,8 +21,8 @@ export default function ModalProvider({ products }: ModalProviderProps) {
   return (
     <>
       <AuthModal />
-      <UploadModal />
       <SubscribeModal products={products} />
+      <UploadModal />
     </>
   );
 }
